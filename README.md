@@ -737,3 +737,26 @@ Since speed is a priority for some of these methods (and because I wanted to str
 #### LinearProbingHashST
 
 `LinearProbingHashST.java` is almost completely retyped from the book, with the exception of using an `int[] primes` to optimize resizing (which was copied to `SeparateChainingHashST.java`).
+
+### Searching Applications
+
+#### LookupIndex
+
+`LookupIndex.java` takes the name of a file, a separator character, and indexes the file using that separator. For each line of the file, it treats the first substring (as denoted by the separator) as a key, and the rest of the substrings as associated values. Notably, `LookupIndex.java` also reverse-indexes the data, so searches can be conducted in both directions. (This is done by maintaining two symbol tables, both of which associate `String`s with `Queue<String>`s containing multiple keys/values.)
+
+The code is copied from the book; the test CSV files were downloaded from [Princeton's list of data sets](https://introcs.cs.princeton.edu/java/data/).
+
+```
+$ ./demo.sh ch3_searching/searching_applications/LookupIndex.java names.csv ","
+Indexing finished. Enter a search term to see all associated keys/values. Ctrl+C to exit.
+MARK
+  From the name MARC
+MARC
+  Warlike
+Warlike
+  MARC
+  MARCELL
+  MARTIN
+MARTIN
+  Warlike
+```
