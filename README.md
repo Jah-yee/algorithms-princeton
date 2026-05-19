@@ -727,3 +727,13 @@ Since speed is a priority for some of these methods (and because I wanted to str
 ```
 
 ![A still picture of an LLRB with 100 nodes, with statistics displayed in the top left corner.](docs/llrb_100.png)
+
+### Hash Tables
+
+#### SeparateChainingHashST
+
+`SeparateChainingHashST.java` is mostly retyped from the book, with the exception of everything having to do with resizing, which was completed as part of an exercise.
+
+#### LinearProbingHashST
+
+`LinearProbingHashST.java` is almost completely retyped from the book, with the exception of using an `int[] primes` to optimize resizing (which was copied to `SeparateChainingHashST.java`).
