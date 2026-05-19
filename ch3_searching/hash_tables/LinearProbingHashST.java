@@ -5,9 +5,15 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public class LinearProbingHashST<Key, Value> {
   private int N;
-  private int M;
+  private int M, lgM;
   private Key[] keys;
   private Value[] vals;
+
+  private static int[] primes = new int[] {
+      0, 0, 0, 0, 0,
+      31, 61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, 131071, 262139, 524287, 1048573, 2097143,
+      4194301, 8388593, 16777213, 33554393, 67108859, 134217689, 268435399, 536870909, 1073741789, 2147483647
+  };
 
   public LinearProbingHashST() {
     this(16);
@@ -18,6 +24,7 @@ public class LinearProbingHashST<Key, Value> {
     M = capacity;
     keys = (Key[]) new Object[M];
     vals = (Value[]) new Object[M];
+    setLgM();
   }
 
   public int size() {
@@ -29,7 +36,16 @@ public class LinearProbingHashST<Key, Value> {
   }
 
   private int hash(Key key) {
-    return (key.hashCode() & 0x7fffffff) % M;
+    int t = key.hashCode() & 0x7fffffff;
+    
+    if (lgM < 26)
+      t = t % primes[lgM + 5];
+
+    return t % M;
+  }
+
+  private void setLgM() {
+    lgM = (int) (Math.log(M) / Math.log(2));
   }
 
   private void resize(int newSize) {
@@ -43,6 +59,7 @@ public class LinearProbingHashST<Key, Value> {
     keys = t.keys;
     vals = t.vals;
     M = t.M;
+    setLgM();
   }
 
   public void put(Key key, Value val) {
