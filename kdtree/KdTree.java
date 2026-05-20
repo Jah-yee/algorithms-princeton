@@ -1,4 +1,3 @@
-import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 
 import edu.princeton.cs.algs4.Point2D;
@@ -161,7 +160,7 @@ public class KdTree {
     validateNotNull(p);
 
     if (isEmpty())
-      throw new NoSuchElementException();
+      return null;
 
     return nearest(root, root.point, p);
   }
