@@ -10,6 +10,7 @@ public class KdTree {
   private static final double pointSize = 0.01;
   private static final double lineWidth = 0.005;
   private Node root;
+  private boolean logVisitedNodesNearest = false; // for testing
 
   private class Node {
     private Point2D point;
@@ -23,6 +24,11 @@ public class KdTree {
       this.N = N;
       this.compareByX = compareByX;
       this.subtreeRect = subtreeRect;
+    }
+
+    @Override
+    public String toString() {
+      return point.toString() + " " + (compareByX ? "cmpX" : "cmpY");
     }
   }
 
@@ -164,6 +170,9 @@ public class KdTree {
     if (h == null)
       return closestFound;
 
+    if (logVisitedNodesNearest)
+      System.out.println(h.toString());
+
     double closestFoundDistance = closestFound.distanceSquaredTo(p);
 
     if (closestFoundDistance == 0)
@@ -249,7 +258,6 @@ public class KdTree {
 
     Point2D secondPoint = new Point2D(0, 0);
     s.insert(secondPoint);
-    System.out.println(s.nearest(new Point2D(0.2, 0.2)));
     assert s.nearest(new Point2D(0.2, 0.2)).equals(secondPoint);
     assert s.nearest(new Point2D(0.7, 0.7)).equals(firstPoint);
 
@@ -273,6 +281,25 @@ public class KdTree {
       containedPoints++;
     }
     assert containedPoints == 2;
+
+    // test case detected by autograder
+    s = new KdTree();
+    s.logVisitedNodesNearest = true;
+    Point2D searchPoint = new Point2D(0.2, 0.3);
+    s.insert(new Point2D(0.7, 0.2));
+    s.insert(new Point2D(0.5, 0.4));
+    s.insert(searchPoint);
+    s.insert(new Point2D(0.4, 0.7));
+    s.insert(new Point2D(0.9, 0.6));
+
+    assert s.nearest(searchPoint) == searchPoint;
+    /*
+     * The autograder detected that nearest() erroneously visited the last node
+     * (0.9, 0.6) as part of its search when given this sequence, but my code
+     * doesn't reproduce the issue.
+     */
+
+    s.logVisitedNodesNearest = false;
 
     s = new KdTree();
     int numPointsToDraw = 50;
