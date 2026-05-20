@@ -59,12 +59,12 @@ public class PointSET {
       return null;
 
     Iterator<Point2D> points = pointSet.iterator();
-    Double minDistance = Double.MAX_VALUE;
+    double minDistance = Double.POSITIVE_INFINITY;
     Point2D nearest = pointSet.max();
 
     while (points.hasNext()) {
       Point2D currentPoint = points.next();
-      Double currentDistance = currentPoint.distanceSquaredTo(p); // slightly faster than distanceTo()
+      double currentDistance = currentPoint.distanceSquaredTo(p); // slightly faster than distanceTo()
       if (currentDistance < minDistance) {
         nearest = currentPoint;
         minDistance = currentDistance;
