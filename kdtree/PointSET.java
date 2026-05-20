@@ -55,6 +55,7 @@ public class PointSET {
 
   public Point2D nearest(Point2D p) {
     validateNotNull(p);
+    if (isEmpty()) return null;
 
     Iterator<Point2D> points = pointSet.iterator();
     Double minDistance = Double.MAX_VALUE;
@@ -83,6 +84,9 @@ public class PointSET {
     assert s.size() == 0;
 
     Point2D firstPoint = new Point2D(0.5, 0.5);
+
+    s.nearest(firstPoint); // shouldn't throw error
+
     s.insert(firstPoint);
 
     assert !s.isEmpty();
