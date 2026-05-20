@@ -7,6 +7,8 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdRandom;
 
 public class KdTree {
+  private static final double pointSize = 0.01;
+  private static final double lineWidth = 0.005;
   private Node root;
 
   private class Node {
@@ -42,12 +44,12 @@ public class KdTree {
   public void insert(Point2D p) {
     validateNotNull(p);
 
-    root = insert(root, p, true, new RectHV(0, 0, 1, 1));
+    root = insert(root, p, true, 0, 0, 1, 1);
   }
 
-  private Node insert(Node h, Point2D p, boolean comparingByX, RectHV subtreeRect) {
+  private Node insert(Node h, Point2D p, boolean comparingByX, double xmin, double ymin, double xmax, double ymax) {
     if (h == null)
-      return new Node(p, 1, comparingByX, subtreeRect);
+      return new Node(p, 1, comparingByX, new RectHV(xmin, ymin, xmax, ymax));
 
     if (h.point.equals(p))
       return h; // do not modify tree
@@ -57,21 +59,17 @@ public class KdTree {
       double currentX = h.point.x();
 
       if (currentX > p.x())
-        h.left = insert(h.left, p, !comparingByX,
-            new RectHV(subtreeRect.xmin(), subtreeRect.ymin(), currentX, subtreeRect.ymax()));
+        h.left = insert(h.left, p, !comparingByX, xmin, ymin, currentX, ymax);
       else
-        h.right = insert(h.right, p, !comparingByX,
-            new RectHV(currentX, subtreeRect.ymin(), subtreeRect.xmax(), subtreeRect.ymax()));
+        h.right = insert(h.right, p, !comparingByX, currentX, ymin, xmax, ymax);
 
     } else {
       double currentY = h.point.y();
 
       if (currentY > p.y())
-        h.left = insert(h.left, p, !comparingByX,
-            new RectHV(subtreeRect.xmin(), subtreeRect.ymin(), subtreeRect.xmax(), currentY));
+        h.left = insert(h.left, p, !comparingByX, xmin, ymin, xmax, currentY);
       else
-        h.right = insert(h.right, p, !comparingByX,
-            new RectHV(subtreeRect.xmin(), currentY, subtreeRect.xmax(), subtreeRect.ymax()));
+        h.right = insert(h.right, p, !comparingByX, xmin, currentY, xmax, ymax);
     }
 
     h.N = size(h.left) + size(h.right) + 1;
@@ -101,9 +99,6 @@ public class KdTree {
   public void draw() {
     draw(root);
   }
-
-  private static double pointSize = 0.01;
-  private static double lineWidth = 0.005;
 
   private void draw(Node h) {
     if (h == null)
@@ -169,13 +164,13 @@ public class KdTree {
     if (h == null)
       return closestFound;
 
-    double closestFoundDistance = closestFound.distanceTo(p);
+    double closestFoundDistance = closestFound.distanceSquaredTo(p);
 
     if (closestFoundDistance == 0)
       return closestFound;
 
     // pruning rule: don't search if closestFound is closer than current rectangle
-    if (closestFoundDistance < h.subtreeRect.distanceTo(p))
+    if (closestFoundDistance < h.subtreeRect.distanceSquaredTo(p))
       return closestFound;
 
     BiFunction<Node, Node, Point2D> findNearest = (Node searchFirst, Node searchSecond) -> {
@@ -183,7 +178,7 @@ public class KdTree {
       double localClosestDistance;
 
       // determine proximity of current point
-      double currentPointDistance = h.point.distanceTo(p);
+      double currentPointDistance = h.point.distanceSquaredTo(p);
       if (currentPointDistance == 0)
         return h.point;
 
@@ -200,7 +195,7 @@ public class KdTree {
       Point2D closestFirst = nearest(searchFirst, localClosest, p);
 
       // update closest found point between previous and result of first search
-      double closestFirstDistance = closestFirst.distanceTo(p);
+      double closestFirstDistance = closestFirst.distanceSquaredTo(p);
       if (closestFirstDistance == 0)
         return closestFirst;
 
@@ -211,7 +206,7 @@ public class KdTree {
 
       // search second subtree
       Point2D closestSecond = nearest(searchSecond, localClosest, p);
-      double closestSecondDistance = closestSecond.distanceTo(p);
+      double closestSecondDistance = closestSecond.distanceSquaredTo(p);
       if (closestSecondDistance == 0)
         return closestSecond;
 
