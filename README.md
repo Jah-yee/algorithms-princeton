@@ -336,6 +336,48 @@ Minimum number of moves = 35
 
 ...the solution is reached!
 
+## Kd-Trees
+
+![Kd-Trees.](docs/kdtree.png)
+
+When storing points on a plane, some strategies are better than others. Specifically, a brute-force approach turns out to have lousy performance when conducting a range search (find all points in a given rectangle) or a nearest-neighbor search (given a target point, find the closest point in the set). A more clever tree structure can overcome these limitations.
+
+My code fulfills 100% of the testing requirements. See the [specification](https://coursera.cs.princeton.edu/algs4/assignments/kdtree/specification.php) for more details.
+
+### [PointSET.java](kdtree/PointSET.java)
+
+First, the brute-force method. `PointSET.java` uses a `SET` (Princeton's version of `java.util.TreeSet`) to store all the points. This at least provides for efficient `insert()` and `contains()` methods in $O(\log n)$ time. However, `range()` and `nearest()` must search every point in the tree, taking $O(n)$ time.
+
+### [KdTree.java](kdtree/KdTree.java)
+
+A custom tree structure in `KdTree.java` allows for much faster implementations.
+
+A `Node` in my `KdTree` stores a point (`Point2D`, another Princeton type) and points to its two children, as usual. However, it also contains two other pieces of data:
+1. Each node has a flag for whether to compare other nodes to it by x-coordinate or by y-coordinate. This allows the creation of a 2d-tree structure where levels of the tree _alternate_ how they compare. This is easier seen than explained; check the booksite for illustrations, or play with the provided `KdTreeVisualizer.java` (click to create points).
+2. Each node stores its own rectangle (`RectHV`, another Princeton type) representing where all of its children reside. The root node stores a rectangle of the entire unit square; its left child stores the rectangle to the _left_ of the root (since the root compares by x-coordinate), `root.left.right` would store a rectangle _left_ of the root and _above_ `root.left` (since `root.left` would compare by y-coordinate), and so on.
+
+Here's a visualization from my unit tests:
+
+![A Kd-tree of fifty points.](docs/kd-tree_50.jpg)
+
+```
+$ ./demo.sh kdtree/KdTree.java
+```
+
+Essentially, this structure associates any given tree or subtree with a sub-area of the square.
+
+The point of this scheme is to use a BST's efficiency _in 2D_ to attain $O(\log n)$ time for `nearest()` and `range()`, while maintaining $O(\log n)$ efficiency for `insert()` and `contains()`.
+
+**Note:** `SET` uses a red-black BST, which means that `PointSET` has better worst-case performance than `KdTree`, which by contrast offers no guarantee of balance. However, `KdTree`'s _average_ time complexity of $O(\log n)$ for both `nearest()` and `range()` is still vastly superior.
+
+Princeton offers a few programs for generating input points and visualizing `range()` and `nearest()`. `KdTreeGenerator.java` prints a given number of points to stdout, which can be directed to a file (piping doesn't appear to work). `NearestNeighborVisualizer.java` and `RangeSearchVisualizer.java` visualize `nearest()` and `range()` respectively, both using mouse inputs. Brute-force results are in red, and `KdTree` results are in blue. (They're the same points since both algorithms are correct; `KdTree` is just faster.)
+
+![A visualization of a range search for 500 points.](docs/range_search_500.jpg)
+
+```
+$ ./demo.sh kdtree/RangeSearchVisualizer.java kdtree/input500.txt
+```
+
 # Chapter Exercises & Problems
 
 These are smaller projects from each chapter that I decided to do, for one reason or another. The `demo.sh` can run them all the same.
@@ -737,3 +779,26 @@ Since speed is a priority for some of these methods (and because I wanted to str
 #### LinearProbingHashST
 
 `LinearProbingHashST.java` is almost completely retyped from the book, with the exception of using an `int[] primes` to optimize resizing (which was copied to `SeparateChainingHashST.java`).
+
+### Searching Applications
+
+#### LookupIndex
+
+`LookupIndex.java` takes the name of a file, a separator character, and indexes the file using that separator. For each line of the file, it treats the first substring (as denoted by the separator) as a key, and the rest of the substrings as associated values. Notably, `LookupIndex.java` also reverse-indexes the data, so searches can be conducted in both directions. (This is done by maintaining two symbol tables, both of which associate `String`s with `Queue<String>`s containing multiple keys/values.)
+
+The code is copied from the book; the test CSV files were downloaded from [Princeton's list of data sets](https://introcs.cs.princeton.edu/java/data/).
+
+```
+$ ./demo.sh ch3_searching/searching_applications/LookupIndex.java names.csv ","
+Indexing finished. Enter a search term to see all associated keys/values. Ctrl+C to exit.
+MARK
+  From the name MARC
+MARC
+  Warlike
+Warlike
+  MARC
+  MARCELL
+  MARTIN
+MARTIN
+  Warlike
+```
