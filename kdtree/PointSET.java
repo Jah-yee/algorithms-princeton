@@ -55,7 +55,8 @@ public class PointSET {
 
   public Point2D nearest(Point2D p) {
     validateNotNull(p);
-    if (isEmpty()) return null;
+    if (isEmpty())
+      return null;
 
     Iterator<Point2D> points = pointSet.iterator();
     Double minDistance = Double.MAX_VALUE;
@@ -74,7 +75,8 @@ public class PointSET {
   }
 
   private void validateNotNull(Object toCheck) {
-    if (toCheck == null) throw new IllegalArgumentException();
+    if (toCheck == null)
+      throw new IllegalArgumentException();
   }
 
   public static void main(String[] args) {
