@@ -124,7 +124,7 @@ Instead of directly checking the Union-find structure to determine percolation, 
 
 The logic all resides in `open()`. When a site is opened at the bottom of the grid, the tree containing that site (root node accessible via `find()` in the Union-find object) is flagged as connected to the bottom. Then, whenever another tree is merged with any such flagged tree (as may happen in other `open()` calls), the resulting tree necessarily also touches the bottom, so its flag is also updated. Lastly, after all those operations, if the current node being opened is both (1) connected to the bottom and (2) connected to the top, then the system must percolate. No bottom virtual node required!
 
-Using the demo script directly on `Percolation.java` just runs its unit tests. Insetad, to visualize the grid, use Princeton's supplied `PercolationVisualizer.java` with an input file.
+Using the demo script directly on `Percolation.java` just runs its unit tests. Instead, to visualize the grid, use Princeton's supplied `PercolationVisualizer.java` with an input file.
 
 ![A percolation visualization that looks like an eagle's head.](docs/percolation_eagle25.png)
 
@@ -171,7 +171,7 @@ My code fulfills 100% of the testing requirements. See the [specification](https
 
 ### [BruteCollinearPoints.java](collinear_points/BruteCollinearPoints.java)
 
-`BruteCollinearPoints.java` finds all sets of four or more collinear points using a brute-force searching algorithm. It examines all possible 4-point tuples in the input and determines whether they are collinear.
+`BruteCollinearPoints.java` finds all sets of four collinear points using a brute-force searching algorithm. It examines all possible 4-point tuples in the input and determines whether they are collinear.
 
 - `BruteCollinearPoints(Point[] points)` runs the searching algorithm and stores all found segments.
 - `segments()` returns (a copy of) all found segments.
