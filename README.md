@@ -199,7 +199,7 @@ Not only is this algorithm much faster than the brute-force method, it also supp
 
 ### [CollinearPointsClient.java](collinear_points/CollinearPointsClient.java)
 
-`CollinearPointsClient.java` accepts an input file, and using `FastCollinearPoints`, finds all line segments containing four or more points, displays the number of segments found and the time it took, and draws all the points and line segments.
+`CollinearPointsClient.java` accepts an input file, and using `FastCollinearPoints`, finds all line segments containing four points, displays the number of segments found and the time it took, and draws all the points and line segments.
 
 The picture at the beginning of this section was obtained using this command:
 
